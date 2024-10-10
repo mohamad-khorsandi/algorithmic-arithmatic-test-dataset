@@ -1,80 +1,73 @@
 package org.example;
 
+
 import java.util.*;
 
 public class Kruskal {
+    void kruskalMST() {
+        Edge[] result = new Edge[V - 1];
+        int e = 0;
+        int i = 0;
 
-    // Class to represent an edge
-    public static class Edge implements Comparable<Edge> {
-        int src, dest, weight;
+        Arrays.sort(edges);
 
-        // Constructor
-        public Edge(int src, int dest, int weight) {
-            this.src = src;
-            this.dest = dest;
-            this.weight = weight;
-        }
+        int[] parent = new int[V];
+        Arrays.fill(parent, -1);
 
-        // Method to compare two edges by their weight
-        public int compareTo(Edge compareEdge) {
-            return this.weight - compareEdge.weight;
-        }
-    }
+        while (e < V - 1) {
+            Edge next_edge = edges[i++];
 
-    // Class to represent a subset for union-find
-    static class Subset {
-        int parent, rank;
-    }
+            int x = find(parent, next_edge.src);
+            int y = find(parent, next_edge.dest);
 
-    // Function to find set of an element (uses path compression)
-    private static int find(Subset[] subsets, int i) {
-        if (subsets[i].parent != i) {
-            subsets[i].parent = find(subsets, subsets[i].parent);
-        }
-        return subsets[i].parent;
-    }
-
-    // Function to unite two sets (uses union by rank)
-    private static void union(Subset[] subsets, int x, int y) {
-        int rootX = find(subsets, x);
-        int rootY = find(subsets, y);
-
-        if (subsets[rootX].rank < subsets[rootY].rank) {
-            subsets[rootX].parent = rootY;
-        } else if (subsets[rootX].rank > subsets[rootY].rank) {
-            subsets[rootY].parent = rootX;
-        } else {
-            subsets[rootY].parent = rootX;
-            subsets[rootX].rank++;
-        }
-    }
-
-    // Kruskal's algorithm to find MST
-    public static List<Edge> kruskalMST(int numVertices, List<Edge> edges) {
-        List<Edge> result = new ArrayList<>();  // This will store the final MST
-        Collections.sort(edges);  // Sort edges in increasing order of weight
-
-        Subset[] subsets = new Subset[numVertices];
-        for (int i = 0; i < numVertices; i++) {
-            subsets[i] = new Subset();
-            subsets[i].parent = i;
-            subsets[i].rank = 0;
-        }
-
-        int e = 0;  // Number of edges in MST
-        int i = 0;  // Index used to pick edges one by one
-        while (e < numVertices - 1) {
-            Edge nextEdge = edges.get(i++);
-            int x = find(subsets, nextEdge.src);
-            int y = find(subsets, nextEdge.dest);
-
-            // If including this edge does not form a cycle
             if (x != y) {
-                result.add(nextEdge);
-                union(subsets, x, y);
-                e++;
+                result[e++] = next_edge;
+                union(parent, x, y);
             }
         }
-        return result;  // Return the MST
+
+        System.out.println("Edges in the MST:");
+        for (i = 0; i < e; ++i)
+            System.out.println(result[i].src + " - "
+                    + result[i].dest + ": " + result[i].weight);
+    }
+
+    int V, E;
+    Edge[] edges;
+
+    public Kruskal(int V, int E) {
+        this.V = V;
+        this.E = E;
+        edges = new Edge[E];
+    }
+
+    int find(int[] parent, int i) {
+        if (parent[i] == -1)
+            return i;
+        return find(parent, parent[i]);
+    }
+
+    void union(int[] parent, int x, int y) {
+        int xset = find(parent, x);
+        int yset = find(parent, y);
+        parent[xset] = yset;
+    }
+
+
+}
+
+class Edge implements Comparable<Edge> {
+    int src, dest, weight;
+
+    public Edge(int src, int dest, int weight) {
+        this.src = src;
+        this.dest = dest;
+        this.weight = weight;
+    }
+
+    // Compare two edges based on their weight
+    @Override
+    public int compareTo(Edge compareEdge) {
+        return this.weight - compareEdge.weight;
     }
 }
