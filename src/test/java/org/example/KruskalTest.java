@@ -5,58 +5,41 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class KruskalTest {
 
-    Kruskal graph;
-
-    @BeforeEach
-    public void setUp() {
-        int vertices = 4;  // Number of vertices
-        int edges = 5;     // Number of edges
-        graph = new Kruskal(vertices, edges);
-
-        // Add edges
-        graph.edgeArray[0].source = 0;
-        graph.edgeArray[0].destination = 1;
-        graph.edgeArray[0].weight = 10;
-
-        graph.edgeArray[1].source = 0;
-        graph.edgeArray[1].destination = 2;
-        graph.edgeArray[1].weight = 6;
-
-        graph.edgeArray[2].source = 0;
-        graph.edgeArray[2].destination = 3;
-        graph.edgeArray[2].weight = 5;
-
-        graph.edgeArray[3].source = 1;
-        graph.edgeArray[3].destination = 3;
-        graph.edgeArray[3].weight = 15;
-
-        graph.edgeArray[4].source = 2;
-        graph.edgeArray[4].destination = 3;
-        graph.edgeArray[4].weight = 4;
-    }
+class KruskalTest {
 
     @Test
-    public void testApplyKruskal() {
-        // Capture the console output using a custom output stream
-        java.io.ByteArrayOutputStream outputStream = new java.io.ByteArrayOutputStream();
-        System.setOut(new java.io.PrintStream(outputStream));
+    void testKruskalMST() {
+        // Initialize graph with 4 vertices and 5 edges
+        int V = 4; // Number of vertices
+        int E = 5; // Number of edges
 
-        // Run the Kruskal algorithm
-        graph.applyKruskal();
+        Kruskal kruskal = new Kruskal(V, E);
 
-        // Get the result from the captured output
-        String result = outputStream.toString().trim();
+        // Add edges
+        kruskal.edges[0] = new Edge(0, 1, 10);
+        kruskal.edges[1] = new Edge(0, 2, 6);
+        kruskal.edges[2] = new Edge(0, 3, 5);
+        kruskal.edges[3] = new Edge(1, 3, 15);
+        kruskal.edges[4] = new Edge(2, 3, 4);
 
-        // Expected output: minimum spanning tree with correct edges
-        String expectedOutput = "2 - 3: 4\n0 - 3: 5\n0 - 1: 10";
+        // Expected output: edges forming the MST
+        // Edge 2-3 with weight 4
+        // Edge 0-3 with weight 5
+        // Edge 0-1 with weight 10
 
-        // Normalize both actual and expected output by trimming and replacing extra whitespace
-        String normalizedResult = result.replaceAll("\\s+", "");
-        String normalizedExpectedOutput = expectedOutput.replaceAll("\\s+", "");
+        // Capturing console output
+        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
+        System.setOut(new java.io.PrintStream(outContent));
 
-        // Test if the result matches the expected MST output
-        assertEquals(normalizedExpectedOutput, normalizedResult);
+        // Run Kruskal's algorithm to find MST
+        kruskal.kruskalMST();
+
+        // Check if the output matches the expected MST
+        String expectedOutput = "Edges in the MST:\r\n"
+                + "2 - 3: 4\r\n"
+                + "0 - 3: 5\r\n"
+                + "0 - 1: 10\r\n";
+        assertEquals(expectedOutput, outContent.toString());
     }
 }
