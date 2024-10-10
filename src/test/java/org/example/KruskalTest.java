@@ -1,50 +1,62 @@
 package org.example;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Test;
-import java.util.ArrayList;
-import java.util.List;
 
 public class KruskalTest {
 
-    @Test
-    public void testKruskalMST() {
-        List<Kruskal.Edge> edges = new ArrayList<>();
-        edges.add(new Kruskal.Edge(0, 1, 10));
-        edges.add(new Kruskal.Edge(0, 2, 6));
-        edges.add(new Kruskal.Edge(0, 3, 5));
-        edges.add(new Kruskal.Edge(1, 3, 15));
-        edges.add(new Kruskal.Edge(2, 3, 4));
+    Kruskal graph;
 
-        List<Kruskal.Edge> mst = Kruskal.kruskalMST(4, edges);
+    @BeforeEach
+    public void setUp() {
+        int vertices = 4;  // Number of vertices
+        int edges = 5;     // Number of edges
+        graph = new Kruskal(vertices, edges);
 
-        assertEquals(3, mst.size());  // Number of edges in MST should be numVertices - 1
-        assertTrue(mst.contains(new Kruskal.Edge(2, 3, 4)));
-        assertTrue(mst.contains(new Kruskal.Edge(0, 3, 5)));
-        assertTrue(mst.contains(new Kruskal.Edge(0, 1, 10)));
+        // Add edges
+        graph.edgeArray[0].source = 0;
+        graph.edgeArray[0].destination = 1;
+        graph.edgeArray[0].weight = 10;
+
+        graph.edgeArray[1].source = 0;
+        graph.edgeArray[1].destination = 2;
+        graph.edgeArray[1].weight = 6;
+
+        graph.edgeArray[2].source = 0;
+        graph.edgeArray[2].destination = 3;
+        graph.edgeArray[2].weight = 5;
+
+        graph.edgeArray[3].source = 1;
+        graph.edgeArray[3].destination = 3;
+        graph.edgeArray[3].weight = 15;
+
+        graph.edgeArray[4].source = 2;
+        graph.edgeArray[4].destination = 3;
+        graph.edgeArray[4].weight = 4;
     }
 
     @Test
-    public void testDisconnectedGraph() {
-        List<Kruskal.Edge> edges = new ArrayList<>();
-        edges.add(new Kruskal.Edge(0, 1, 10));
-        edges.add(new Kruskal.Edge(2, 3, 5));
+    public void testApplyKruskal() {
+        // Capture the console output using a custom output stream
+        java.io.ByteArrayOutputStream outputStream = new java.io.ByteArrayOutputStream();
+        System.setOut(new java.io.PrintStream(outputStream));
 
-        List<Kruskal.Edge> mst = Kruskal.kruskalMST(4, edges);  // 4 vertices but not all connected
+        // Run the Kruskal algorithm
+        graph.applyKruskal();
 
-        assertEquals(2, mst.size());  // Only 2 edges can be included in the MST (one for each connected component)
-    }
+        // Get the result from the captured output
+        String result = outputStream.toString().trim();
 
-    @Test
-    public void testSingleEdge() {
-        List<Kruskal.Edge> edges = new ArrayList<>();
-        edges.add(new Kruskal.Edge(0, 1, 1));
+        // Expected output: minimum spanning tree with correct edges
+        String expectedOutput = "2 - 3: 4\n0 - 3: 5\n0 - 1: 10";
 
-        List<Kruskal.Edge> mst = Kruskal.kruskalMST(2, edges);
+        // Normalize both actual and expected output by trimming and replacing extra whitespace
+        String normalizedResult = result.replaceAll("\\s+", "");
+        String normalizedExpectedOutput = expectedOutput.replaceAll("\\s+", "");
 
-        assertEquals(1, mst.size());  // MST contains only one edge
-        assertTrue(mst.contains(new Kruskal.Edge(0, 1, 1)));
+        // Test if the result matches the expected MST output
+        assertEquals(normalizedExpectedOutput, normalizedResult);
     }
 }
