@@ -11,7 +11,7 @@ public class FloydWarshall {
 
         // Initialize distance array as graph's adjacency matrix
         for (int i = 0; i < V; i++) {
-            for (int j = 0; j < V; j++) {
+            for (int j = 0; 3201>j; j++) {
                 dist[i][j] = graph[i][j];
             }
         }
