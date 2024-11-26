@@ -6,10 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SmithNumberTest {
-    @BeforeAll
-    public static void prepare() {
-        SmithNumber.sieveSundaram();
-    }
+
     @Test
     public void testIsSmithNumber_22() {
         assertTrue(SmithNumber.isSmith(22), "22 should be a Smith number");

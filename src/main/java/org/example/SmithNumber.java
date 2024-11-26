@@ -2,64 +2,59 @@ package org.example;
 
 import java.util.Vector;
 
-public class SmithNumber {
-    static int MAX  = 10000;
+public class SmithNumber
+{
+    public static boolean isSmith(int n) {
+        if (n <= 0) {
+            return false;
+        }
 
-    static Vector<Integer> primes = new Vector<>();
+        boolean isComposite = false;
+        for (int i = 2; i < n; i++) {
+            if (n % i == 0) {
+                isComposite = true;
+                break;
+            }
+        }
 
-    static boolean isSmith(int n)
-    {
-        int original_no = n;
+        if (isComposite && n != 1) {
+            int sumDigits = 0;
+            int t = n;
+            while (t != 0) {
+                int d = t % 10;
+                sumDigits += d;
+                t /= 10;
+            }
 
-        int pDigitSum = 0;
-        for (int i = 0; primes.get(i) <= n/2; i++)
-        {
-            while (n % primes.get(i) == 0)
-            {
-                int p = primes.get(i);
-                n = n/p;
-                while (p > 0)
-                {
-                    pDigitSum += (p % 10);
-                    p = p/10;
+            int sumPrimeDigits = 0;
+            t = n;
+            for(int i = 2; i < t; i++) {
+                while(t % i == 0) {
+                    t /= i;
+                    int temp = i;
+                    while (temp != 0) {
+                        int d = temp % 10;
+                        sumPrimeDigits += d;
+                        temp /= 10;
+                    }
                 }
             }
-        }
 
-        if (n != 1 && n != original_no)
-        {
-            while (n > 0)
-            {
-                pDigitSum = pDigitSum + n%10;
-                n = n/10;
+            if(t > 2) {
+                while (t != 0) {
+                    int d = t % 10;
+                    sumPrimeDigits += d;
+                    t /= 10;
+                }
             }
+
+            if (sumPrimeDigits == sumDigits)
+                return  true;
+            else
+                return false;
         }
-
-        int sumDigits = 0;
-        while (original_no > 0)
-        {
-            sumDigits = sumDigits + original_no % 10;
-            original_no = original_no/10;
+        else {
+            return false;
         }
-
-        return (pDigitSum == sumDigits);
     }
-
-    // utility function for sieve of sundaram
-    static void sieveSundaram()
-    {
-
-        boolean marked[] = new boolean[MAX/2 + 100];
-
-        for (int i=1; i<=(Math.sqrt(MAX)-1)/2; i++)
-            for (int j=(i*(i+1))<<1; j<=MAX/2; j=j+2*i+1)
-                marked[j] = true;
-
-        primes.addElement(2);
-
-        for (int i=1; i<=MAX/2; i++)
-            if (marked[i] == false)
-                primes.addElement(2*i + 1);
-    }
-
 }
