@@ -1,15 +1,13 @@
 package org.example;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-
-
-class KruskalTest {
+public class KruskalTest {
 
     @Test
-    void testKruskalMST() {
+    public void testKruskalMST() {
         // Initialize graph with 4 vertices and 5 edges
         int V = 4; // Number of vertices
         int E = 5; // Number of edges
